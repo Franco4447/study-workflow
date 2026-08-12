@@ -54,15 +54,17 @@ function main() {
     let inputPath = null;
     let outputPath = null;
     let referenceDoc = null;
+    let engine = 'word'; // 'word' o 'latex'
 
     for (let i = 0; i < args.length; i++) {
         if (args[i] === '--in' && args[i+1]) inputPath = args[++i];
         if (args[i] === '--out' && args[i+1]) outputPath = args[++i];
         if (args[i] === '--ref' && args[i+1]) referenceDoc = args[++i];
+        if (args[i] === '--engine' && args[i+1]) engine = args[++i].toLowerCase();
     }
 
     if (!inputPath || !outputPath) {
-        console.error("Uso: node compile_docs.js --in <archivo_o_directorio> --out <archivo_salida> [--ref <plantilla.docx>]");
+        console.error("Uso: node compile_docs.js --in <archivo_o_directorio> --out <archivo_salida> [--ref <plantilla.docx>] [--engine word|latex]");
         process.exit(1);
     }
 
@@ -83,16 +85,46 @@ function main() {
     const tempMdPath = outputPath + ".temp.md";
     fs.writeFileSync(tempMdPath, processedContent, 'utf8');
 
-    console.log(`Compilando documento a ${outputPath}...`);
+    console.log(`Compilando documento a ${outputPath} [Engine: ${engine}]...`);
     try {
-        let pandocCmd = `pandoc "${tempMdPath}" -o "${outputPath}"`;
-        if (referenceDoc && fs.existsSync(referenceDoc)) {
-            pandocCmd += ` --reference-doc="${referenceDoc}"`;
+        let isPdf = outputPath.toLowerCase().endsWith('.pdf');
+        
+        if (isPdf && engine === 'latex') {
+            console.log("Generando PDF académico nativo con MiKTeX (pdflatex)...");
+            let pandocCmd = `pandoc "${tempMdPath}" -o "${outputPath}" --pdf-engine=pdflatex`;
+            execSync(pandocCmd, { stdio: 'inherit' });
+        } else {
+            let pandocOut = isPdf ? outputPath.replace(/\.pdf$/i, '.docx') : outputPath;
+
+            let pandocCmd = `pandoc "${tempMdPath}" -o "${pandocOut}"`;
+            if (referenceDoc && fs.existsSync(referenceDoc)) {
+                pandocCmd += ` --reference-doc="${referenceDoc}"`;
+            }
+            execSync(pandocCmd, { stdio: 'inherit' });
+
+            if (isPdf) {
+                console.log("Convirtiendo formato a PDF usando automatización de Windows (Word)...");
+                const absolutePandocOut = path.resolve(pandocOut).replace(/\\/g, '\\\\');
+                const absoluteOutputPath = path.resolve(outputPath).replace(/\\/g, '\\\\');
+                const psScript = `
+$word = New-Object -ComObject Word.Application
+$word.Visible = $false
+$doc = $word.Documents.Open('${absolutePandocOut}')
+$doc.SaveAs([ref]'${absoluteOutputPath}', [ref]17)
+$doc.Close()
+$word.Quit()
+`;
+                const psFile = tempMdPath + ".ps1";
+                fs.writeFileSync(psFile, psScript, 'utf8');
+                execSync(`powershell -ExecutionPolicy Bypass -File "${psFile}"`, { stdio: 'inherit' });
+                fs.unlinkSync(psFile);
+                fs.unlinkSync(pandocOut);
+            }
         }
-        execSync(pandocCmd, { stdio: 'inherit' });
+
         console.log("¡Compilación exitosa!");
     } catch (e) {
-        console.error("Error al ejecutar Pandoc:", e.message);
+        console.error("Error al compilar:", e.message);
         process.exit(1);
     } finally {
         if (fs.existsSync(tempMdPath)) fs.unlinkSync(tempMdPath);
