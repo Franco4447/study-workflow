@@ -52,7 +52,9 @@ function processMarkdown(content, baseOutPath) {
             fs.writeFileSync(mmdFile, cleanCode, 'utf8');
             console.log(`Renderizando diagrama localmente (${mermaidCounter})...`);
             execSync(`npx --yes @mermaid-js/mermaid-cli -i "${mmdFile}" -o "${pngFile}" -b white -s 2`);
-            return `![Mapa Conceptual](${pngFile.replace(/\\/g, '/')})`;
+            // Pandoc requiere rutas url-encoded si tienen espacios
+            const safePath = encodeURI(pngFile.replace(/\\/g, '/'));
+            return `![Mapa Conceptual](${safePath})`;
         } catch (e) {
             console.error(`Error con mmdc local, usando Kroki como respaldo: ${e.message}`);
             const payload = encodeKroki(cleanCode);
