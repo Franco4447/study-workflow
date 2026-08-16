@@ -46,6 +46,19 @@ function processMarkdown(content) {
         return `![Mapa Conceptual](${url})`;
     });
 
+    // 3. Fix GitHub Alerts for Pandoc
+    processed = processed.replace(/>\s*\[!(IMPORTANT|NOTE|WARNING|TIP|CAUTION)\]/gi, (match, p1) => {
+        const translation = {
+            'IMPORTANT': 'Importante',
+            'NOTE': 'Nota',
+            'WARNING': 'Advertencia',
+            'TIP': 'Consejo',
+            'CAUTION': 'Precaución'
+        };
+        const title = translation[p1.toUpperCase()] || p1;
+        return `> **${title}:**`;
+    });
+
     return processed;
 }
 
@@ -96,28 +109,52 @@ function main() {
         } else {
             let pandocOut = isPdf ? outputPath.replace(/\.pdf$/i, '.docx') : outputPath;
 
-            let pandocCmd = `pandoc "${tempMdPath}" -o "${pandocOut}"`;
+            let pandocCmd = `pandoc "${tempMdPath}" -f gfm -o "${pandocOut}"`;
             if (referenceDoc && fs.existsSync(referenceDoc)) {
                 pandocCmd += ` --reference-doc="${referenceDoc}"`;
             }
             execSync(pandocCmd, { stdio: 'inherit' });
 
-            if (isPdf) {
-                console.log("Convirtiendo formato a PDF usando automatización de Windows (Word)...");
-                const absolutePandocOut = path.resolve(pandocOut).replace(/\\/g, '\\\\');
-                const absoluteOutputPath = path.resolve(outputPath).replace(/\\/g, '\\\\');
-                const psScript = `
+            console.log("Aplicando formato avanzado en Word (Márgenes Estrechos y Texto Justificado)...");
+            const absolutePandocOut = path.resolve(pandocOut);
+            const absoluteOutputPath = path.resolve(outputPath);
+            let psScript = `
+param([string]$InFile, [string]$OutFile, [string]$IsPdf)
 $word = New-Object -ComObject Word.Application
 $word.Visible = $false
-$doc = $word.Documents.Open('${absolutePandocOut}')
-$doc.SaveAs([ref]'${absoluteOutputPath}', [ref]17)
-$doc.Close()
+$doc = $word.Documents.Open($InFile)
+$doc.PageSetup.TopMargin = 36
+$doc.PageSetup.BottomMargin = 36
+$doc.PageSetup.LeftMargin = 36
+$doc.PageSetup.RightMargin = 36
+foreach ($para in $doc.Paragraphs) {
+    $para.Alignment = 3
+}
+
+if ($IsPdf -eq '1') {
+    Write-Host "Guardando como PDF..."
+    $doc.SaveAs([ref]$OutFile, [ref]17)
+} else {
+    Write-Host "Guardando DOCX con nuevo formato..."
+    $doc.Save()
+}
+
+$doc.Close(0)
 $word.Quit()
 `;
-                const psFile = tempMdPath + ".ps1";
-                fs.writeFileSync(psFile, psScript, 'utf8');
-                execSync(`powershell -ExecutionPolicy Bypass -File "${psFile}"`, { stdio: 'inherit' });
-                fs.unlinkSync(psFile);
+            
+            const psFile = tempMdPath + ".ps1";
+            // Add UTF-8 BOM so PowerShell reads accents correctly
+            fs.writeFileSync(psFile, '\ufeff' + psScript, 'utf8');
+            
+            const isPdfStr = isPdf ? '1' : '0';
+            // Use execSync with powershell passing arguments
+            const psCmd = `powershell -ExecutionPolicy Bypass -File "${psFile}" -InFile "${absolutePandocOut}" -OutFile "${absoluteOutputPath}" -IsPdf ${isPdfStr}`;
+            execSync(psCmd, { stdio: 'inherit' });
+            
+            fs.unlinkSync(psFile);
+
+            if (isPdf) {
                 fs.unlinkSync(pandocOut);
             }
         }

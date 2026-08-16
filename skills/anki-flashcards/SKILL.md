@@ -24,8 +24,9 @@ Genera un archivo `.csv` (mediante la herramienta de escritura de archivos) con 
 2. **Formato**: `Pregunta;Respuesta;Etiquetas`
    - La tercera columna (Etiquetas) es opcional pero muy recomendada (ej: `Psicoanálisis Freud Unidad1`). Las etiquetas se separan por espacios.
 3. **Brevedad**: Las respuestas deben ser cortas. Si es un proceso largo, divídelo en varias tarjetas secuenciales o usa formato de enumeración.
-4. **Codificación**: Guarda el archivo en UTF-8.
-5. **Formato HTML**: Puedes usar negritas `<b>texto</b>` o saltos de línea `<br>` en la respuesta, pero ten cuidado de no romper la estructura del CSV (todo el bloque de respuesta debe estar en la misma línea del archivo).
+4. **Limpieza de Código**: OMITIR ESTRICTAMENTE cualquier etiqueta de alerta de Markdown (ej: `> [!IMPORTANT]`, `> [!NOTE]`). El CSV final no debe contener código crudo, solo texto natural.
+5. **Codificación**: Guarda el archivo en UTF-8.
+6. **Formato HTML**: Puedes usar negritas `<b>texto</b>` o saltos de línea `<br>` en la respuesta, pero ten cuidado de no romper la estructura del CSV (todo el bloque de respuesta debe estar en la misma línea del archivo).
 
 ## Ejemplo de Salida (CSV)
 

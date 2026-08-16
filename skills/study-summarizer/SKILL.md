@@ -36,14 +36,34 @@ Una tabla en Markdown con las definiciones precisas:
 ### 4. 💡 Citas Críticas (o Snippets de Código si aplica)
 Utiliza "GitHub Alerts" `> [!IMPORTANT]` para resaltar entre 2 y 4 citas textuales cruciales del autor (o bloques de código fundamentales). Incluye una línea justificando por qué es clave.
 
-### 5. 🗺️ Mapa Conceptual (Mermaid)
+### 5. 🗂️ Mapa Conceptual (Mermaid)
 Crea un diagrama ````mermaid` que esquematice la relación lógica entre los conceptos desarrollados. 
-**REGLA ESTRICTA SINTAXIS MERMAID:** Encierra SIEMPRE el texto de los nodos entre comillas dobles para evitar errores de renderizado.
-Ejemplo Correcto:
+
+**REGLAS ESTRICTAS DE DISEÑO (Para optimizar la impresión visual y el tamaño):**
+1. **Múltiples Mapas si es necesario (Límite de tamaño):** Si el contenido es muy extenso y estimas que un mapa superará los 12-15 nodos, DEBES dividirlo en dos o más gráficos Mermaid separados por subtítulos lógicos. Nunca hagas un solo mapa gigante.
+2. **Cajas Altas y Angostas (Text Wrapping):** Es OBLIGATORIO insertar un salto de línea (`<br>`) dentro de las comillas de cada nodo si el texto tiene más de 3 palabras. Nunca dejes oraciones largas en una sola línea.
+3. **Apilamiento Vertical de Listas:** Si un nodo tiene muchos hijos (ej. 4 características o patologías), no los despliegues en abanico horizontal. Apílalos verticalmente usando enlaces invisibles (`~~~`) entre los hermanos.
+4. **Etiquetas Lógicas en Flechas (Opcional):** Si la relación entre dos nodos no es obvia o requiere especificidad, usa etiquetas sobre las flechas (ej. `A -->|"Desencadena"| B`). Mantén el diagrama simple y no lo fuerces, etiqueta sólo cuando la aclaración aporte valor y claridad real.
+5. **Semántica de Colores (Styling):** Colorea levemente los "nodos terminales" (consecuencias finales, patologías, síntomas, resultados, etc.) usando la sintaxis de estilos de Mermaid para destacarlos del proceso teórico (ej: `style Nodo fill:#f9d0c4,stroke:#333`).
+6. **Sintaxis Correcta:** Encierra SIEMPRE el texto de los nodos entre comillas dobles.
+
+Ejemplo Correcto de Diseño Vertical y Semántico:
 ```mermaid
 graph TD
-    A["Concepto Principal"] -->|"Relación"| B["Sub-Concepto"]
-    B --> C["Detalle (con paréntesis)"]
+    A["Clínica de<br>los Bordes"] --> B["Fracaso del<br>Fantasma"]
+    A --> C["Falla en la Función<br>Paterna / Fálica"]
+    
+    C -->|"Produce"| D["Modalidades de<br>Presentación"]
+    D --> E1["Anorexia /<br>Bulimia"]
+    D --> E2["Adicciones"]
+    D --> E3["Locuras"]
+    
+    E1 ~~~ E2
+    E2 ~~~ E3
+    
+    style E1 fill:#f9d0c4,stroke:#333
+    style E2 fill:#f9d0c4,stroke:#333
+    style E3 fill:#f9d0c4,stroke:#333
 ```
 
 ### 6. 🧠 Preguntas de Autoevaluación
