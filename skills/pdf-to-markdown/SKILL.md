@@ -15,8 +15,8 @@ Para extraer PDFs, debes utilizar el script de Python incluido en este plugin:
 ### 1. Parámetros del Script
 
 El script acepta los siguientes argumentos:
-- `--input` o `-i`: (Requerido) Ruta absoluta al archivo PDF o al directorio que contiene los PDFs.
-- `--outdir` o `-o`: (Requerido) Ruta absoluta al directorio donde se guardarán los archivos Markdown generados.
+- `--input` o `-i`: (Requerido) Ruta absoluta al archivo PDF o al directorio que contiene los PDFs (usualmente en `1_Bibliografia_Original/`).
+- `--outdir` o `-o`: (Requerido) Ruta absoluta al directorio donde se guardarán los archivos Markdown generados. Debes guardar esto OBLIGATORIAMENTE en la carpeta `2_Textos_Extraidos/` de la materia actual. Si el usuario no te da una ruta de salida, genera los archivos aquí por defecto y usa el formato de nombre `[Unidad]_[Autor]_[Capítulo]_Crudo.md`.
 - `--engine` o `-e`: (Opcional) El motor de extracción a usar. Puede ser `mineru` (por defecto) o `pdfplumber`. Si MinerU falla, el script intentará automáticamente usar `pdfplumber`.
 
 ### 2. Ejecución
