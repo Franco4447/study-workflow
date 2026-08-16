@@ -44,9 +44,16 @@ function processMarkdown(content, baseOutPath) {
 
         mermaidCounter++;
         const outDir = baseOutPath ? path.dirname(baseOutPath) : __dirname;
+        const mediaDir = path.join(outDir, '_media');
+        
+        // Crear la subcarpeta _media si no existe
+        if (!fs.existsSync(mediaDir)) {
+            fs.mkdirSync(mediaDir, { recursive: true });
+        }
+        
         const tmpId = Date.now() + "_" + mermaidCounter;
-        const mmdFile = path.join(outDir, `mermaid_${tmpId}.mmd`);
-        const pngFile = path.join(outDir, `mermaid_${tmpId}.png`);
+        const mmdFile = path.join(mediaDir, `mermaid_${tmpId}.mmd`);
+        const pngFile = path.join(mediaDir, `mermaid_${tmpId}.png`);
         
         try {
             fs.writeFileSync(mmdFile, cleanCode, 'utf8');
