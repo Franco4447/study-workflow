@@ -39,24 +39,34 @@ Utiliza "GitHub Alerts" `> [!IMPORTANT]` para resaltar entre 2 y 4 citas textual
 ### 5. 🗂️ Mapa Conceptual (Mermaid)
 Crea un diagrama ````mermaid` que esquematice la relación lógica entre los conceptos desarrollados. 
 
-**REGLAS ESTRICTAS DE DISEÑO (Para optimizar la impresión visual y el tamaño):**
-1. **Múltiples Mapas si es necesario (Límite de tamaño):** Si el contenido es muy extenso y estimas que un mapa superará los 12-15 nodos, DEBES dividirlo en dos o más gráficos Mermaid separados por subtítulos lógicos. Nunca hagas un solo mapa gigante.
-2. **Cajas Altas y Angostas (Text Wrapping):** Es OBLIGATORIO insertar un salto de línea (`<br>`) dentro de las comillas de cada nodo si el texto tiene más de 3 palabras. Nunca dejes oraciones largas en una sola línea.
-3. **Agrupación de Listas Finales:** Si un nodo se ramifica en una lista simple de elementos que ya no tienen más hijos (ej. 4 características, etapas o ecosistemas), NO los dibujes como nodos separados creando un abanico horizontal. Agrúpalos en una lista de viñetas dentro del mismo nodo usando saltos de línea (ej: `A["Dimensiones:<br>• Cronológica<br>• Biológica<br>• Psicológica"]`).
-4. **Apilamiento Vertical de Listas:** Si un nodo tiene múltiples ramas complejas (que sí tienen hijos), apílalos verticalmente usando enlaces invisibles (`~~~`) entre los hermanos en lugar de dejarlos en horizontal.
-5. **Etiquetas Lógicas en Flechas (Opcional):** Si la relación entre dos nodos no es obvia o requiere especificidad, usa etiquetas sobre las flechas (ej. `A -->|"Desencadena"| B`). Mantén el diagrama simple y no lo fuerces, etiqueta sólo cuando la aclaración aporte valor y claridad real.
-6. **Semántica de Colores (Styling):** Colorea levemente los "nodos terminales" (consecuencias finales, patologías, síntomas, resultados, etc.) usando la sintaxis de estilos de Mermaid para destacarlos del proceso teórico (ej: `style Nodo fill:#f9d0c4,stroke:#333`).
-7. **Sintaxis Correcta:** Encierra SIEMPRE el texto de los nodos entre comillas dobles.
+**REGLAS ESTRICTAS DE DISEÑO (Para optimizar la impresión en A4):**
+1. **Múltiples Mapas si es necesario:** Si estimas que un mapa superará los 12-15 nodos, DEBES dividirlo en dos o más gráficos Mermaid separados por subtítulos lógicos.
+2. **Cajas Angostas (Text Wrapping):** Es OBLIGATORIO insertar `<br>` dentro de las comillas de cada nodo si el texto tiene más de 3 palabras.
+3. **Layout en Matriz Balanceada:** Organiza los nodos en **filas horizontales** donde cada fila represente un nivel jerárquico. Deja que Mermaid distribuya los hermanos naturalmente a lo ancho. NO fuerces apilamiento vertical con enlaces invisibles (`~~~`).
+4. **Alineación de Columnas:** Usa enlaces invisibles (`~~~`) **SÓLO** para alinear un nodo debajo de una columna existente (ej: `B2 ~~~ C2` para que C2 quede alineado debajo de B2), nunca para forzar apilamiento vertical.
+5. **Flechas Largas (`--->`):** Son válidas para empujar un nodo una fila más abajo cuando una fila queda demasiado ancha. Declara siempre el nodo destino AL FINAL del código Mermaid para que quede posicionado en el extremo y la flecha no cruce otros nodos.
+6. **Máximo por fila:** No más de 5 nodos angostos (con `<br>`) por fila para garantizar legibilidad al imprimir.
+7. **Agrupación de Listas Finales:** Si un nodo se ramifica en una enumeración simple sin hijos y sin peso conceptual propio (ej: 4 ecosistemas), agrúpalos en viñetas dentro del mismo nodo (ej: `A["Dimensiones:<br>• Cronológica<br>• Biológica"]`). Si cada ítem tiene peso conceptual propio, déjalos como nodos separados.
+8. **Etiquetas en Flechas (Opcional):** Si la relación entre dos nodos no es obvia, usa etiquetas (ej. `A -->|"Desencadena"| B`). No lo fuerces, etiqueta sólo cuando aporte claridad real.
+9. **Semántica de Colores:** Colorea levemente los nodos terminales usando estilos Mermaid (ej: `style Nodo fill:#f9f2ec,stroke:#333`).
+10. **Sintaxis:** Encierra SIEMPRE el texto de los nodos entre comillas dobles.
 
-Ejemplo Correcto de Diseño Vertical y Semántico:
+Ejemplo Correcto de Diseño en Matriz:
 ```mermaid
 graph TD
-    A["Clínica de<br>los Bordes"] --> B["Fracaso del<br>Fantasma"]
-    A --> C["Falla en la Función<br>Paterna / Fálica"]
+    A["Envejecimiento<br>Secundario"]
     
-    C -->|"Produce"| D["Modalidades de Presentación:<br>• Anorexia / Bulimia<br>• Adicciones<br>• Locuras"]
+    A -->|"Explicado por"| B["Teorías de Tasa<br>Variable (Errores)"]
+    A --->|"Afectado por"| C["Moduladores Claves<br>de la Salud"]
     
-    style D fill:#f9d0c4,stroke:#333
+    B -->|"Ejemplo"| B1["Radicales Libres<br>y Desgaste"]
+    
+    C -->|"Socio-Cultural"| C1["Estatus y<br>Cultura"]
+    C -->|"Hábitos"| C2["Dieta y<br>Ejercicio"]
+    
+    style B1 fill:#f9f2ec,stroke:#333
+    style C1 fill:#f9f2ec,stroke:#333
+    style C2 fill:#f9f2ec,stroke:#333
 ```
 
 ### 6. 🧠 Preguntas de Autoevaluación

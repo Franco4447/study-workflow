@@ -131,6 +131,24 @@ foreach ($para in $doc.Paragraphs) {
     $para.Alignment = 3
 }
 
+# Resize images: scale small ones up to 80% page width, shrink oversized to fit, center all
+$pageWidth = $doc.PageSetup.PageWidth - $doc.PageSetup.LeftMargin - $doc.PageSetup.RightMargin
+$targetMin = $pageWidth * 0.8
+foreach ($shape in $doc.InlineShapes) {
+    if ($shape.Width -gt 0 -and $shape.Height -gt 0) {
+        if ($shape.Width -lt $targetMin) {
+            $ratio = $targetMin / $shape.Width
+            $shape.Width = $targetMin
+            $shape.Height = $shape.Height * $ratio
+        } elseif ($shape.Width -gt $pageWidth) {
+            $ratio = $pageWidth / $shape.Width
+            $shape.Width = $pageWidth
+            $shape.Height = $shape.Height * $ratio
+        }
+        $shape.Range.ParagraphFormat.Alignment = 1
+    }
+}
+
 if ($IsPdf -eq '1') {
     Write-Host "Guardando como PDF..."
     $doc.SaveAs([ref]$OutFile, [ref]17)
