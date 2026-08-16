@@ -17,6 +17,10 @@ Cuando el usuario pida un resumen o guía de estudio, asegúrate de pedir (o ide
 2.  **Archivos de Origen**: Dónde están los textos fuente (rutas absolutas de los `.md`).
 3.  **Preguntas Guía (Opcional)**: Si el usuario tiene un cuestionario que necesita responder.
 
+## Reglas de Formateo Markdown (CRÍTICAS)
+- **Doble Salto de Línea:** Utiliza SIEMPRE un doble salto de línea (una línea completamente en blanco) para separar párrafos, ítems de listas, o ideas conceptuales distintas. Si usas un solo salto de línea (Shift+Enter), el compilador Markdown agrupará todo en un mismo y gigantesco bloque de texto o lo meterá dentro del ítem de la lista anterior.
+- **Subtítulos y Negritas:** Usa subtítulos (###, ####) para organizar temas y subtemas. Usa negritas (`**texto**`) para destacar palabras clave.
+
 ## Estructura Requerida de la Guía de Estudio
 
 El archivo generado DEBE contener exactamente esta estructura:
