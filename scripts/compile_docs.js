@@ -12,11 +12,12 @@ function encodeKroki(text) {
         .replace(/=+$/, '');
 }
 
-function processMarkdown(content) {
+function processMarkdown(content, baseOutPath) {
     // 1. Fix Pandoc Math issue (Lacanian divided subject $)
     let processed = content.replace(/(?<!\\)\$/g, '\\$');
 
     // 2. Fix Mermaid blocks
+    let mermaidCounter = 0;
     processed = processed.replace(/```mermaid([\s\S]*?)```/g, (match, mermaidCode) => {
         let cleanCode = mermaidCode.trim();
         
@@ -41,9 +42,23 @@ function processMarkdown(content) {
         cleanCode = cleanCode.replace(/◊/g, 'rombo');
         cleanCode = cleanCode.replace(/\$/g, 'S');
 
-        const payload = encodeKroki(cleanCode);
-        const url = `https://kroki.io/mermaid/png/${payload}`;
-        return `![Mapa Conceptual](${url})`;
+        mermaidCounter++;
+        const outDir = baseOutPath ? path.dirname(baseOutPath) : __dirname;
+        const tmpId = Date.now() + "_" + mermaidCounter;
+        const mmdFile = path.join(outDir, `mermaid_${tmpId}.mmd`);
+        const pngFile = path.join(outDir, `mermaid_${tmpId}.png`);
+        
+        try {
+            fs.writeFileSync(mmdFile, cleanCode, 'utf8');
+            console.log(`Renderizando diagrama localmente (${mermaidCounter})...`);
+            execSync(`npx --yes @mermaid-js/mermaid-cli -i "${mmdFile}" -o "${pngFile}" -b white -s 2`);
+            return `![Mapa Conceptual](${pngFile.replace(/\\/g, '/')})`;
+        } catch (e) {
+            console.error(`Error con mmdc local, usando Kroki como respaldo: ${e.message}`);
+            const payload = encodeKroki(cleanCode);
+            const url = `https://kroki.io/mermaid/png/${payload}`;
+            return `![Mapa Conceptual](${url})`;
+        }
     });
 
     // 3. Fix GitHub Alerts for Pandoc
@@ -94,7 +109,7 @@ function main() {
         combinedContent = fs.readFileSync(inputPath, 'utf8');
     }
 
-    const processedContent = processMarkdown(combinedContent);
+    const processedContent = processMarkdown(combinedContent, outputPath);
     const tempMdPath = outputPath + ".temp.md";
     fs.writeFileSync(tempMdPath, processedContent, 'utf8');
 
@@ -123,6 +138,7 @@ param([string]$InFile, [string]$OutFile, [string]$IsPdf)
 $word = New-Object -ComObject Word.Application
 $word.Visible = $false
 $doc = $word.Documents.Open($InFile)
+$doc.PageSetup.PaperSize = 7 # wdPaperA4
 $doc.PageSetup.TopMargin = 36
 $doc.PageSetup.BottomMargin = 36
 $doc.PageSetup.LeftMargin = 36
