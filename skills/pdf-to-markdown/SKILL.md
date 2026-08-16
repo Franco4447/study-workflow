@@ -31,3 +31,8 @@ python "C:\Users\Fmendezcasariego\.gemini\config\plugins\study-workflow\scripts\
 1. Si el usuario te proporciona un directorio, revisa si la carpeta de destino existe. Si no, el script la creará automáticamente.
 2. Avisa al usuario que el proceso puede tomar algunos segundos o minutos dependiendo de la cantidad y tamaño de los PDFs.
 3. Una vez finalizada la extracción, informa al usuario qué archivos se generaron y ofrécele continuar con la skill `study-summarizer` para resumirlos.
+4. Opcionalmente (si MinerU está instalado localmente y configurado en el entorno), invoca el comando CLI de MinerU para la extracción de PDFs muy complejos.
+5. **Validación de Extracción (LLM-in-the-loop):** Una vez extraído el texto (por cualquier método), DEBES realizar un "Sanity Check" del resultado antes de darlo por bueno.
+   - Lee extractos aleatorios del Markdown generado.
+   - Analiza si el texto es semánticamente inteligible y respeta la estructura de párrafos.
+   - Si detectas "ruido OCR" (alucinaciones de caracteres, símbolos, saltos de línea a mitad de la oración persistentes), asume que la extracción falló y busca alternativas de reparación (heurísticas de reemplazo) o notifica al usuario del fallo técnico para intentar otra herramienta.

@@ -39,7 +39,10 @@ Para un documento con rigor académico/científico (ej. paper/tesis):
 node "C:\Users\Fmendezcasariego\.gemini\config\plugins\study-workflow\scripts\compile_docs.js" --in "C:\Ruta\Al\paper" --out "C:\Ruta\Al\paper_academico.pdf" --engine latex
 ```
 
-### 4. Flujo
+### 4. Flujo y Validación de Compilación
 
-- Revisa que Pandoc esté instalado si hay algún error.
+- **Pre-limpieza (Crucial):** Antes de llamar a este script de compilación (o si unes documentos masivos), utiliza el script `scripts/consolidate_notes.js` para purgar caracteres invisibles (BOM) y glitcheos que puedan romper a Pandoc.
+- **Robustez de Rutas:** Asegúrate siempre de envolver las rutas con comillas en los comandos de PowerShell y usar secuencias de escape si hay caracteres conflictivos.
+- **Manejo de Errores:** Revisa que Pandoc esté instalado si hay algún error (stdout/stderr). Si el proceso de Word se bloquea por permisos (ej. documento abierto), pídele al usuario que lo cierre o utiliza un nombre de archivo alternativo.
+- **Validación:** Verifica que el tamaño del archivo resultante no sea 0 bytes antes de notificar éxito.
 - Proporciona al usuario un enlace cliqueable al documento generado para que pueda abrirlo.
