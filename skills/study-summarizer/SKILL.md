@@ -50,6 +50,7 @@ Crea un diagrama ````mermaid` que esquematice la relación lógica entre los con
 8. **Etiquetas en Flechas (Opcional):** Si la relación entre dos nodos no es obvia, usa etiquetas (ej. `A -->|"Desencadena"| B`). No lo fuerces, etiqueta sólo cuando aporte claridad real.
 9. **Semántica de Colores:** Colorea levemente los nodos terminales usando estilos Mermaid (ej: `style Nodo fill:#f9f2ec,stroke:#333`).
 10. **Sintaxis:** Encierra SIEMPRE el texto de los nodos entre comillas dobles.
+11. **Orden de Declaración para Evitar Cruces:** Mermaid (Dagre) ordena las columnas de izquierda a derecha según el orden en que declaras las conexiones. Si una flecha larga atraviesa o se cruza con otros nodos, cambia el orden de las líneas en el código (ej: declarar la rama central antes que la rama derecha) para forzar un espacio limpio por donde pueda bajar la flecha sin interferencias.
 
 Ejemplo Correcto de Diseño en Matriz:
 ```mermaid
