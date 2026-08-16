@@ -42,10 +42,11 @@ Crea un diagrama ````mermaid` que esquematice la relación lógica entre los con
 **REGLAS ESTRICTAS DE DISEÑO (Para optimizar la impresión visual y el tamaño):**
 1. **Múltiples Mapas si es necesario (Límite de tamaño):** Si el contenido es muy extenso y estimas que un mapa superará los 12-15 nodos, DEBES dividirlo en dos o más gráficos Mermaid separados por subtítulos lógicos. Nunca hagas un solo mapa gigante.
 2. **Cajas Altas y Angostas (Text Wrapping):** Es OBLIGATORIO insertar un salto de línea (`<br>`) dentro de las comillas de cada nodo si el texto tiene más de 3 palabras. Nunca dejes oraciones largas en una sola línea.
-3. **Apilamiento Vertical de Listas:** Si un nodo tiene muchos hijos (ej. 4 características o patologías), no los despliegues en abanico horizontal. Apílalos verticalmente usando enlaces invisibles (`~~~`) entre los hermanos.
-4. **Etiquetas Lógicas en Flechas (Opcional):** Si la relación entre dos nodos no es obvia o requiere especificidad, usa etiquetas sobre las flechas (ej. `A -->|"Desencadena"| B`). Mantén el diagrama simple y no lo fuerces, etiqueta sólo cuando la aclaración aporte valor y claridad real.
-5. **Semántica de Colores (Styling):** Colorea levemente los "nodos terminales" (consecuencias finales, patologías, síntomas, resultados, etc.) usando la sintaxis de estilos de Mermaid para destacarlos del proceso teórico (ej: `style Nodo fill:#f9d0c4,stroke:#333`).
-6. **Sintaxis Correcta:** Encierra SIEMPRE el texto de los nodos entre comillas dobles.
+3. **Agrupación de Listas Finales:** Si un nodo se ramifica en una lista simple de elementos que ya no tienen más hijos (ej. 4 características, etapas o ecosistemas), NO los dibujes como nodos separados creando un abanico horizontal. Agrúpalos en una lista de viñetas dentro del mismo nodo usando saltos de línea (ej: `A["Dimensiones:<br>• Cronológica<br>• Biológica<br>• Psicológica"]`).
+4. **Apilamiento Vertical de Listas:** Si un nodo tiene múltiples ramas complejas (que sí tienen hijos), apílalos verticalmente usando enlaces invisibles (`~~~`) entre los hermanos en lugar de dejarlos en horizontal.
+5. **Etiquetas Lógicas en Flechas (Opcional):** Si la relación entre dos nodos no es obvia o requiere especificidad, usa etiquetas sobre las flechas (ej. `A -->|"Desencadena"| B`). Mantén el diagrama simple y no lo fuerces, etiqueta sólo cuando la aclaración aporte valor y claridad real.
+6. **Semántica de Colores (Styling):** Colorea levemente los "nodos terminales" (consecuencias finales, patologías, síntomas, resultados, etc.) usando la sintaxis de estilos de Mermaid para destacarlos del proceso teórico (ej: `style Nodo fill:#f9d0c4,stroke:#333`).
+7. **Sintaxis Correcta:** Encierra SIEMPRE el texto de los nodos entre comillas dobles.
 
 Ejemplo Correcto de Diseño Vertical y Semántico:
 ```mermaid
@@ -53,17 +54,9 @@ graph TD
     A["Clínica de<br>los Bordes"] --> B["Fracaso del<br>Fantasma"]
     A --> C["Falla en la Función<br>Paterna / Fálica"]
     
-    C -->|"Produce"| D["Modalidades de<br>Presentación"]
-    D --> E1["Anorexia /<br>Bulimia"]
-    D --> E2["Adicciones"]
-    D --> E3["Locuras"]
+    C -->|"Produce"| D["Modalidades de Presentación:<br>• Anorexia / Bulimia<br>• Adicciones<br>• Locuras"]
     
-    E1 ~~~ E2
-    E2 ~~~ E3
-    
-    style E1 fill:#f9d0c4,stroke:#333
-    style E2 fill:#f9d0c4,stroke:#333
-    style E3 fill:#f9d0c4,stroke:#333
+    style D fill:#f9d0c4,stroke:#333
 ```
 
 ### 6. 🧠 Preguntas de Autoevaluación
