@@ -24,6 +24,7 @@ Si el usuario solicita explícitamente un **"Apunte Extendido"** o si el materia
 2. **Fase 2: Orquestación de Subagentes**: Usa la herramienta `invoke_subagent` para delegar el trabajo. 
    - Crea un subagente por cada bloque temático.
    - Instrúyelo para redactar **únicamente** su sección asignada con nivel de detalle extremo y exhaustivo (sin sobresintetizar).
+   - **IMPORTANTE:** Adviértele explícitamente a cada subagente que NO incluya el nombre organizativo interno (ej. "Bloque 1", "Bloque 2") en los títulos de su texto. Deben titular directamente con el nombre del tema (ej. "Desarrollo Físico").
    - Pídele que genere el **mapa conceptual (Mermaid) específico** para su sección y que guarde el bloque en un archivo temporal (ej. `temp_bloque1.md`).
 3. **Fase 3: Consolidación**: Cuando todos los subagentes finalicen, utiliza el script del plugin para unificar los textos de manera segura, ejecutando el comando: `node C:\Users\Fmendezcasariego\.gemini\config\plugins\study-workflow\scripts\consolidate_notes.js --out <archivo_final.md> <temp1.md> <temp2.md> ...`. Este script limpia automáticamente errores de codificación (BOM) y glitcheos de subtítulos. Luego, agrega al principio del documento resultante una Tesis Central unificada y al final el Glosario y las Preguntas. Borra los archivos temporales.
 4. **Fase 4: Compilación**: Finalmente, ejecuta el script de compilación para generar el Word (A4) consolidado y preséntaselo al usuario.
