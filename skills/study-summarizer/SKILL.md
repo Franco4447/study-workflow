@@ -17,6 +17,17 @@ Cuando el usuario pida un resumen o guía de estudio, asegúrate de pedir (o ide
 2.  **Archivos de Origen**: Dónde están los textos fuente (rutas absolutas de los `.md`).
 3.  **Preguntas Guía (Opcional)**: Si el usuario tiene un cuestionario que necesita responder.
 
+### Protocolo de Apuntes Masivos (Apuntes Extendidos)
+Si el usuario solicita explícitamente un **"Apunte Extendido"** o si el material bibliográfico es masivo, **NO intentes redactar el apunte completo en un solo paso**. El límite de tokens de salida forzará una compresión indeseada. DEBES actuar como Orquestador y seguir este flujo:
+
+1. **Fase 1: Planificación (Índice)**: Analiza las fuentes y divide el apunte en capítulos o bloques temáticos.
+2. **Fase 2: Orquestación de Subagentes**: Usa la herramienta `invoke_subagent` para delegar el trabajo. 
+   - Crea un subagente por cada bloque temático.
+   - Instrúyelo para redactar **únicamente** su sección asignada con nivel de detalle extremo y exhaustivo (sin sobresintetizar).
+   - Pídele que genere el **mapa conceptual (Mermaid) específico** para su sección y que guarde el bloque en un archivo temporal (ej. `temp_bloque1.md`).
+3. **Fase 3: Consolidación**: Cuando todos los subagentes finalicen y queden inactivos, lee los archivos temporales y únelos en el archivo de destino final (`_Guia_Estudio.md`), agregando al principio una Tesis Central unificada y al final el Glosario y las Preguntas. Borra los archivos temporales.
+4. **Fase 4: Compilación**: Finalmente, ejecuta el script de compilación para generar el Word (A4) consolidado y preséntaselo al usuario.
+
 ## Reglas de Formateo Markdown (CRÍTICAS)
 - **Doble Salto de Línea:** Utiliza SIEMPRE un doble salto de línea (una línea completamente en blanco) para separar párrafos, ítems de listas, o ideas conceptuales distintas. Si usas un solo salto de línea (Shift+Enter), el compilador Markdown agrupará todo en un mismo y gigantesco bloque de texto o lo meterá dentro del ítem de la lista anterior.
 - **Subtítulos y Negritas:** Usa subtítulos (###, ####) para organizar temas y subtemas. Usa negritas (`**texto**`) para destacar palabras clave.
