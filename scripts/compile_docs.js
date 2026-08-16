@@ -149,6 +149,19 @@ foreach ($shape in $doc.InlineShapes) {
     }
 }
 
+# Style tables: clear all borders, add thin bottom border to all rows, thick bottom border to header
+foreach ($table in $doc.Tables) {
+    $table.Borders.Enable = 0
+    foreach ($row in $table.Rows) {
+        $row.Borders.Item(-3).LineStyle = 1
+        $row.Borders.Item(-3).LineWidth = 4
+    }
+    # Thick border for the first row (header)
+    if ($table.Rows.Count -gt 0) {
+        $table.Rows.Item(1).Borders.Item(-3).LineWidth = 12
+    }
+}
+
 if ($IsPdf -eq '1') {
     Write-Host "Guardando como PDF..."
     $doc.SaveAs([ref]$OutFile, [ref]17)
