@@ -25,7 +25,7 @@ Si el usuario solicita explícitamente un **"Apunte Extendido"** o si el materia
    - Crea un subagente por cada bloque temático.
    - Instrúyelo para redactar **únicamente** su sección asignada con nivel de detalle extremo y exhaustivo (sin sobresintetizar).
    - Pídele que genere el **mapa conceptual (Mermaid) específico** para su sección y que guarde el bloque en un archivo temporal (ej. `temp_bloque1.md`).
-3. **Fase 3: Consolidación**: Cuando todos los subagentes finalicen y queden inactivos, lee los archivos temporales y únelos en el archivo de destino final (`_Guia_Estudio.md`), agregando al principio una Tesis Central unificada y al final el Glosario y las Preguntas. Borra los archivos temporales.
+3. **Fase 3: Consolidación**: Cuando todos los subagentes finalicen, utiliza el script del plugin para unificar los textos de manera segura, ejecutando el comando: `node C:\Users\Fmendezcasariego\.gemini\config\plugins\study-workflow\scripts\consolidate_notes.js --out <archivo_final.md> <temp1.md> <temp2.md> ...`. Este script limpia automáticamente errores de codificación (BOM) y glitcheos de subtítulos. Luego, agrega al principio del documento resultante una Tesis Central unificada y al final el Glosario y las Preguntas. Borra los archivos temporales.
 4. **Fase 4: Compilación**: Finalmente, ejecuta el script de compilación para generar el Word (A4) consolidado y preséntaselo al usuario.
 
 ## Reglas de Formateo Markdown (CRÍTICAS)
