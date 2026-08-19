@@ -156,34 +156,45 @@ foreach ($para in $doc.Paragraphs) {
     $para.Alignment = 3
 }
 
-# Resize images: handle Landscape vs Portrait, convert to Shape for Square Wrapping
+# Escalamiento Tipográfico Preciso (14 pts)
+$scaleFactor = 14.0 / 24.0 # Garantiza que un texto nativo de 24pt se reduzca a 14pt
+
 $pageWidth = $doc.PageSetup.PageWidth - $doc.PageSetup.LeftMargin - $doc.PageSetup.RightMargin
 $pageHeight = $doc.PageSetup.PageHeight - $doc.PageSetup.TopMargin - $doc.PageSetup.BottomMargin
 
 for ($i = $doc.InlineShapes.Count; $i -gt 0; $i--) {
     $inlineShape = $doc.InlineShapes.Item($i)
     if ($inlineShape.Width -gt 0 -and $inlineShape.Height -gt 0) {
-        $isLandscape = $inlineShape.Width -gt $inlineShape.Height
         
+        $idealWidth = $inlineShape.Width * $scaleFactor
+        $idealHeight = $inlineShape.Height * $scaleFactor
+        
+        # 1. Restricción por Ancho
+        if ($idealWidth -gt $pageWidth) {
+            $ratio = $pageWidth / $idealWidth
+            $idealWidth = $pageWidth
+            $idealHeight = $idealHeight * $ratio
+        }
+        
+        # 2. Restricción por Alto
+        if ($idealHeight -gt $pageHeight) {
+            $ratio = $pageHeight / $idealHeight
+            $idealHeight = $pageHeight
+            $idealWidth = $idealWidth * $ratio
+        }
+        
+        # 3. Conversión a Forma Flotante para Ajuste Cuadrado
         $shape = $inlineShape.ConvertToShape()
         $shape.WrapFormat.Type = 0 # wdWrapSquare
         $shape.LockAspectRatio = -1 # msoTrue
         
-        if ($isLandscape) {
-            # Paisaje: Ocupar todo el ancho de los márgenes
-            $shape.Width = $pageWidth
-            if ($shape.Height -gt $pageHeight) {
-                $shape.Height = $pageHeight
-            }
-            $shape.Left = -999995 # wdShapeCenter
+        $shape.Width = $idealWidth
+        
+        # 4. Comportamiento de Alineación
+        if ($idealWidth -ge ($pageWidth * 0.8)) {
+             $shape.Left = -999995 # wdShapeCenter (Centrar si ocupa casi toda la hoja)
         } else {
-            # Retrato: Hacerlo más chico para que no quede gigante (ej. 45% del ancho)
-            $targetWidth = $pageWidth * 0.45
-            $shape.Width = $targetWidth
-            if ($shape.Height -gt ($pageHeight * 0.6)) {
-                $shape.Height = $pageHeight * 0.6
-            }
-            $shape.Left = -999998 # wdShapeLeft (Alineado a la izquierda para envolver texto)
+             $shape.Left = -999998 # wdShapeLeft (Alinear a la izquierda para envolver texto)
         }
     }
 }
@@ -241,4 +252,5 @@ $word.Quit()
 }
 
 main();
+
 
