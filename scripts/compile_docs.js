@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const zlib = require('zlib');
 const path = require('path');
 const { execSync } = require('child_process');
@@ -39,7 +39,7 @@ function processMarkdown(content, baseOutPath) {
         });
         
         // Remove crash-prone symbols
-        cleanCode = cleanCode.replace(/◊/g, 'rombo');
+        cleanCode = cleanCode.replace(/â—Š/g, 'rombo');
         cleanCode = cleanCode.replace(/\$/g, 'S');
 
         mermaidCounter++;
@@ -77,7 +77,7 @@ function processMarkdown(content, baseOutPath) {
             'NOTE': 'Nota',
             'WARNING': 'Advertencia',
             'TIP': 'Consejo',
-            'CAUTION': 'Precaución'
+            'CAUTION': 'PrecauciÃ³n'
         };
         const title = translation[p1.toUpperCase()] || p1;
         return `> **${title}:**`;
@@ -127,7 +127,7 @@ function main() {
         let isPdf = outputPath.toLowerCase().endsWith('.pdf');
         
         if (isPdf && engine === 'latex') {
-            console.log("Generando PDF académico nativo con MiKTeX (pdflatex)...");
+            console.log("Generando PDF acadÃ©mico nativo con MiKTeX (pdflatex)...");
             let pandocCmd = `pandoc "${tempMdPath}" -o "${outputPath}" --pdf-engine=pdflatex`;
             execSync(pandocCmd, { stdio: 'inherit' });
         } else {
@@ -139,7 +139,7 @@ function main() {
             }
             execSync(pandocCmd, { stdio: 'inherit' });
 
-            console.log("Aplicando formato avanzado en Word (Márgenes Estrechos y Texto Justificado)...");
+            console.log("Aplicando formato avanzado en Word (MÃ¡rgenes Estrechos y Texto Justificado)...");
             const absolutePandocOut = path.resolve(pandocOut);
             const absoluteOutputPath = path.resolve(outputPath);
             let psScript = `
@@ -156,21 +156,35 @@ foreach ($para in $doc.Paragraphs) {
     $para.Alignment = 3
 }
 
-# Resize images: scale small ones up to 80% page width, shrink oversized to fit, center all
+# Resize images: handle Landscape vs Portrait, convert to Shape for Square Wrapping
 $pageWidth = $doc.PageSetup.PageWidth - $doc.PageSetup.LeftMargin - $doc.PageSetup.RightMargin
-$targetMin = $pageWidth * 0.8
-foreach ($shape in $doc.InlineShapes) {
-    if ($shape.Width -gt 0 -and $shape.Height -gt 0) {
-        if ($shape.Width -lt $targetMin) {
-            $ratio = $targetMin / $shape.Width
-            $shape.Width = $targetMin
-            $shape.Height = $shape.Height * $ratio
-        } elseif ($shape.Width -gt $pageWidth) {
-            $ratio = $pageWidth / $shape.Width
+$pageHeight = $doc.PageSetup.PageHeight - $doc.PageSetup.TopMargin - $doc.PageSetup.BottomMargin
+
+for ($i = $doc.InlineShapes.Count; $i -gt 0; $i--) {
+    $inlineShape = $doc.InlineShapes.Item($i)
+    if ($inlineShape.Width -gt 0 -and $inlineShape.Height -gt 0) {
+        $isLandscape = $inlineShape.Width -gt $inlineShape.Height
+        
+        $shape = $inlineShape.ConvertToShape()
+        $shape.WrapFormat.Type = 0 # wdWrapSquare
+        $shape.LockAspectRatio = -1 # msoTrue
+        
+        if ($isLandscape) {
+            # Paisaje: Ocupar todo el ancho de los márgenes
             $shape.Width = $pageWidth
-            $shape.Height = $shape.Height * $ratio
+            if ($shape.Height -gt $pageHeight) {
+                $shape.Height = $pageHeight
+            }
+            $shape.Left = -999995 # wdShapeCenter
+        } else {
+            # Retrato: Hacerlo más chico para que no quede gigante (ej. 45% del ancho)
+            $targetWidth = $pageWidth * 0.45
+            $shape.Width = $targetWidth
+            if ($shape.Height -gt ($pageHeight * 0.6)) {
+                $shape.Height = $pageHeight * 0.6
+            }
+            $shape.Left = -999998 # wdShapeLeft (Alineado a la izquierda para envolver texto)
         }
-        $shape.Range.ParagraphFormat.Alignment = 1
     }
 }
 
@@ -217,7 +231,7 @@ $word.Quit()
             }
         }
 
-        console.log("¡Compilación exitosa!");
+        console.log("Â¡CompilaciÃ³n exitosa!");
     } catch (e) {
         console.error("Error al compilar:", e.message);
         process.exit(1);
@@ -227,3 +241,4 @@ $word.Quit()
 }
 
 main();
+
